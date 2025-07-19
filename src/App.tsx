@@ -16,6 +16,7 @@ function App() {
       <div className="min-h-screen bg-white">
         <Routes>
           <Route path="/admin" element={<Admin />} />
+          <Route path="/login" element={<Admin />} />
           <Route path="/*" element={
             <>
               <Navbar />
