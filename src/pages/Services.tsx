@@ -21,6 +21,7 @@ interface Service {
   price: string;
   duration: string;
   features: string[];
+  icon?: any;
 }
 
 const Services = () => {

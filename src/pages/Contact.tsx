@@ -245,7 +245,7 @@ const Contact = () => {
                   Our Services
                 </h3>
                 <div className="space-y-3">
-                  {services.map((service, index) => (
+                  {services.map((service) => (
                     <div key={service} className="flex items-center space-x-3">
                       <CheckCircle size={20} className="text-accent-500 flex-shrink-0" />
                       <span className="text-primary-700">{service}</span>

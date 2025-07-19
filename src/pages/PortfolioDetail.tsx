@@ -18,6 +18,8 @@ interface Design {
   image: string;
   price?: string;
   features: string[];
+  projectTitle?: string;
+  projectDescription?: string;
 }
 
 const PortfolioDetail = () => {
@@ -173,7 +175,7 @@ const PortfolioDetail = () => {
     }))
   );
 
-  const categoryName = category?.replace('-', ' ').charAt(0).toUpperCase() + category?.replace('-', ' ').slice(1) || 'Category';
+  const categoryName = category ? category.replace('-', ' ').charAt(0).toUpperCase() + category.replace('-', ' ').slice(1) : 'Category';
 
   return (
     <div className="pt-16 lg:pt-20">
