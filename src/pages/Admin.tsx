@@ -896,6 +896,8 @@ const PortfolioTab = ({
     features: []
   });
   const [showDesignForm, setShowDesignForm] = useState(false);
+  const [editingDesign, setEditingDesign] = useState<Design | null>(null);
+  const [showDesignEditForm, setShowDesignEditForm] = useState(false);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -923,6 +925,24 @@ const PortfolioTab = ({
       ...prev,
       designs: prev.designs?.filter(d => d.id !== designId) || []
     }));
+  };
+
+  const editDesign = (design: Design) => {
+    setEditingDesign(design);
+    setShowDesignEditForm(true);
+  };
+
+  const updateDesign = () => {
+    if (editingDesign) {
+      setFormData(prev => ({
+        ...prev,
+        designs: prev.designs?.map(d => 
+          d.id === editingDesign.id ? editingDesign : d
+        ) || []
+      }));
+      setEditingDesign(null);
+      setShowDesignEditForm(false);
+    }
   };
 
   return (
@@ -1012,14 +1032,40 @@ const PortfolioTab = ({
                       {design.price && (
                         <p className="text-sm text-accent-600 mt-1">Price: {design.price}</p>
                       )}
+                      {design.image && (
+                        <p className="text-sm text-primary-500 mt-1">Image: {design.image}</p>
+                      )}
+                      {design.features && design.features.length > 0 && (
+                        <div className="mt-2">
+                          <p className="text-xs text-primary-500 mb-1">Features:</p>
+                          <div className="flex flex-wrap gap-1">
+                            {design.features.map((feature, index) => (
+                              <span key={index} className="text-xs bg-accent-100 text-accent-700 px-2 py-1 rounded">
+                                {feature}
+                              </span>
+                            ))}
+                          </div>
+                        </div>
+                      )}
                     </div>
-                    <button
-                      type="button"
-                      onClick={() => removeDesign(design.id)}
-                      className="text-red-500 hover:text-red-700 ml-2"
-                    >
-                      <Trash2 size={16} />
-                    </button>
+                    <div className="flex space-x-2 ml-2">
+                      <button
+                        type="button"
+                        onClick={() => editDesign(design)}
+                        className="text-blue-500 hover:text-blue-700"
+                        title="Edit Design"
+                      >
+                        <Edit size={16} />
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => removeDesign(design.id)}
+                        className="text-red-500 hover:text-red-700"
+                        title="Delete Design"
+                      >
+                        <Trash2 size={16} />
+                      </button>
+                    </div>
                   </div>
                 </div>
               ))}
@@ -1106,6 +1152,84 @@ const PortfolioTab = ({
                 <button
                   type="button"
                   onClick={() => setShowDesignForm(false)}
+                  className="flex-1 px-4 py-2 border border-primary-300 text-primary-700 rounded-lg hover:bg-primary-50 transition-colors"
+                >
+                  Cancel
+                </button>
+              </div>
+            </div>
+          </motion.div>
+        </div>
+      )}
+
+      {/* Design Edit Form Modal */}
+      {showDesignEditForm && editingDesign && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="bg-white rounded-lg shadow-xl p-6 max-w-md w-full"
+          >
+            <div className="flex justify-between items-center mb-4">
+              <h3 className="text-lg font-semibold text-primary-800">Edit Design Option</h3>
+              <button
+                onClick={() => {
+                  setShowDesignEditForm(false);
+                  setEditingDesign(null);
+                }}
+                className="text-primary-500 hover:text-primary-700"
+              >
+                <X size={20} />
+              </button>
+            </div>
+
+            <div className="space-y-4">
+              <input
+                type="text"
+                placeholder="Design Name"
+                value={editingDesign.name}
+                onChange={(e) => setEditingDesign({ ...editingDesign, name: e.target.value })}
+                className="w-full px-4 py-2 border border-primary-200 rounded-lg focus:border-accent-500 focus:outline-none"
+              />
+              
+              <textarea
+                placeholder="Design Description"
+                value={editingDesign.description}
+                onChange={(e) => setEditingDesign({ ...editingDesign, description: e.target.value })}
+                rows={3}
+                className="w-full px-4 py-2 border border-primary-200 rounded-lg focus:border-accent-500 focus:outline-none"
+              />
+              
+              <input
+                type="text"
+                placeholder="Image URL or Emoji (e.g., 🏠)"
+                value={editingDesign.image}
+                onChange={(e) => setEditingDesign({ ...editingDesign, image: e.target.value })}
+                className="w-full px-4 py-2 border border-primary-200 rounded-lg focus:border-accent-500 focus:outline-none"
+              />
+              
+              <input
+                type="text"
+                placeholder="Price (optional)"
+                value={editingDesign.price || ''}
+                onChange={(e) => setEditingDesign({ ...editingDesign, price: e.target.value })}
+                className="w-full px-4 py-2 border border-primary-200 rounded-lg focus:border-accent-500 focus:outline-none"
+              />
+
+              <div className="flex space-x-3">
+                <button
+                  type="button"
+                  onClick={updateDesign}
+                  className="flex-1 bg-accent-500 hover:bg-accent-600 text-white px-4 py-2 rounded-lg transition-colors"
+                >
+                  Update Design
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setShowDesignEditForm(false);
+                    setEditingDesign(null);
+                  }}
                   className="flex-1 px-4 py-2 border border-primary-300 text-primary-700 rounded-lg hover:bg-primary-50 transition-colors"
                 >
                   Cancel
